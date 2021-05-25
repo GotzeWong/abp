@@ -79,7 +79,7 @@ namespace Volo.Abp.Identity.Web.Pages.Identity.Users
             [DisableAuditing]
             public string Password { get; set; }
 
-            [Required]
+            //[Required]
             [EmailAddress]
             [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxEmailLength))]
             public string Email { get; set; }

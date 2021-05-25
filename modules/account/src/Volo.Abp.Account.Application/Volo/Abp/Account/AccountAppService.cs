@@ -39,6 +39,8 @@ namespace Volo.Abp.Account
         {
             await CheckSelfRegistrationAsync();
 
+            IdentityOptions.Value.User.RequireUniqueEmail = false;
+
             await IdentityOptions.SetAsync();
 
             var user = new IdentityUser(GuidGenerator.Create(), input.UserName, input.EmailAddress, CurrentTenant.Id);

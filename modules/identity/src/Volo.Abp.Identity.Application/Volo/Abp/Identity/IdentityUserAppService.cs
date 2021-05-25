@@ -26,6 +26,8 @@ namespace Volo.Abp.Identity
             UserRepository = userRepository;
             RoleRepository = roleRepository;
             IdentityOptions = identityOptions;
+
+            IdentityOptions.Value.User.RequireUniqueEmail = false;
         }
 
         //TODO: [Authorize(IdentityPermissions.Users.Default)] should go the IdentityUserAppService class.

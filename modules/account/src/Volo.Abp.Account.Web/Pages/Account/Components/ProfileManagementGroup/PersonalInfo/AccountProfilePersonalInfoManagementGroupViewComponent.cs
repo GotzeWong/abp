@@ -35,7 +35,7 @@ namespace Volo.Abp.Account.Web.Pages.Account.Components.ProfileManagementGroup.P
             [Display(Name = "DisplayName:UserName")]
             public string UserName { get; set; }
 
-            [Required]
+            //[Required]
             [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxEmailLength))]
             [Display(Name = "DisplayName:Email")]
             public string Email { get; set; }

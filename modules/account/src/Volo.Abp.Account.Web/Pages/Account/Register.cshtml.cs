@@ -162,7 +162,7 @@ namespace Volo.Abp.Account.Web.Pages.Account
             [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxUserNameLength))]
             public string UserName { get; set; }
 
-            [Required]
+            //[Required]
             [EmailAddress]
             [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxEmailLength))]
             public string EmailAddress { get; set; }
