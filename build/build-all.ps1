@@ -18,3 +18,6 @@ foreach ($solutionPath in $solutionPaths) {
 }
 
 Set-Location $rootFolder
+Write-Host 'Build all solutions(Debug) success!'
+$null = [Console]::ReadKey('?')
+

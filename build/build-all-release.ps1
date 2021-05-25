@@ -14,5 +14,5 @@ foreach ($solutionPath in $solutionPaths) {
 }
 
 Set-Location $rootFolder
-Write-Host 'Build all solutions success!'
+Write-Host 'Build all solutions(Release) success!'
 $null = [Console]::ReadKey('?')
