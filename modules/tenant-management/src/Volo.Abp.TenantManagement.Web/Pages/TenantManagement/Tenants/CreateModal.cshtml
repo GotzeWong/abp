@@ -23,6 +23,10 @@
 
             <abp-input asp-for="Tenant.AdminPassword" />
 
+            <abp-input asp-for="Tenant.Trademark" />
+
+            <abp-input asp-for="Tenant.Introduction" />
+
             @foreach (var propertyInfo in ObjectExtensionManager.Instance.GetProperties<CreateModalModel.TenantInfoModel>())
             {
                 if (!propertyInfo.Name.EndsWith("_Text"))

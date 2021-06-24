@@ -9,6 +9,8 @@ namespace Volo.Abp.TenantManagement
     public class Tenant : FullAuditedAggregateRoot<Guid>
     {
         public virtual string Name { get; protected set; }
+        public virtual string Trademark { get; protected set; }
+        public virtual string Introduction { get; protected set; }
 
         public virtual List<TenantConnectionString> ConnectionStrings { get; protected set; }
 
@@ -21,6 +23,18 @@ namespace Volo.Abp.TenantManagement
             : base(id)
         {
             SetName(name);
+
+            ConnectionStrings = new List<TenantConnectionString>();
+        }
+
+        protected internal Tenant(Guid id, [NotNull] string name, string trademark, string introduction)
+            : base(id)
+        {
+            SetName(name);
+
+            Trademark = trademark;
+
+            Introduction = introduction;
 
             ConnectionStrings = new List<TenantConnectionString>();
         }

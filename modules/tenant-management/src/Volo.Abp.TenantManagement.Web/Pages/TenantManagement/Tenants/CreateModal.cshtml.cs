@@ -49,6 +49,9 @@ namespace Volo.Abp.TenantManagement.Web.Pages.TenantManagement.Tenants
             [DataType(DataType.Password)]
             [MaxLength(128)]
             public string AdminPassword { get; set; }
+
+            public string Trademark { get; set; }
+            public string Introduction { get; set; }
         }
     }
 }

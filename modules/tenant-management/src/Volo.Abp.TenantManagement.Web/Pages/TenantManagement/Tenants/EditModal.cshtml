@@ -19,6 +19,8 @@
         <abp-modal-body>
             <input asp-for="Tenant.Id" />
             <abp-input asp-for="Tenant.Name" label="@L["TenantName"].Value" />
+            <abp-input asp-for="Tenant.Trademark" />
+            <abp-input asp-for="Tenant.Introduction" />
             @foreach (var propertyInfo in ObjectExtensionManager.Instance.GetProperties<EditModalModel.TenantInfoModel>())
             {
                 if (!propertyInfo.Name.EndsWith("_Text"))

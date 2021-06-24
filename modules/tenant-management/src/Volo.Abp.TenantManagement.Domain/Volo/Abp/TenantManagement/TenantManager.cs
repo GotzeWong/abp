@@ -22,6 +22,14 @@ namespace Volo.Abp.TenantManagement
             return new Tenant(GuidGenerator.Create(), name);
         }
 
+        public virtual async Task<Tenant> CreateAsync(Tenant tenant)
+        {
+            Check.NotNull(tenant.Name, nameof(tenant.Name));
+
+            await ValidateNameAsync(tenant.Name);
+            return new Tenant(GuidGenerator.Create(), tenant.Name, tenant.Trademark, tenant.Introduction);
+        }
+
         public virtual async Task ChangeNameAsync(Tenant tenant, string name)
         {
             Check.NotNull(tenant, nameof(tenant));
