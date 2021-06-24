@@ -76,6 +76,9 @@ namespace Volo.Abp.Identity
         {
             await IdentityOptions.SetAsync();
 
+            //Email Can be empty but Not BeNull
+            input.Email = input.Email??string.Empty;
+
             var user = new IdentityUser(
                 GuidGenerator.Create(),
                 input.UserName,
@@ -84,6 +87,7 @@ namespace Volo.Abp.Identity
             );
 
             input.MapExtraPropertiesTo(user);
+
 
             (await UserManager.CreateAsync(user, input.Password)).CheckErrors();
             await UpdateUserByInput(user, input);
@@ -98,6 +102,9 @@ namespace Volo.Abp.Identity
         public virtual async Task<IdentityUserDto> UpdateAsync(Guid id, IdentityUserUpdateDto input)
         {
             await IdentityOptions.SetAsync();
+
+            //Email Can be empty but Not BeNull
+            input.Email = input.Email ?? string.Empty;
 
             var user = await UserManager.GetByIdAsync(id);
             user.ConcurrencyStamp = input.ConcurrencyStamp;

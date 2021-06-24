@@ -42,6 +42,7 @@ namespace Volo.Abp.Identity
         /// <summary>
         /// Gets or sets the email address for this user.
         /// </summary>
+        [CanBeNull]
         public virtual string Email { get; protected internal set; }
 
         /// <summary>
@@ -146,13 +147,13 @@ namespace Volo.Abp.Identity
             : base(id)
         {
             Check.NotNull(userName, nameof(userName));
-            Check.NotNull(email, nameof(email));
+            //Check.NotNull(email, nameof(email));
 
             TenantId = tenantId;
             UserName = userName;
             NormalizedUserName = userName.ToUpperInvariant();
             Email = email;
-            NormalizedEmail = email.ToUpperInvariant();
+            NormalizedEmail = email == null ? null: email.ToUpperInvariant();
             ConcurrencyStamp = Guid.NewGuid().ToString();
             SecurityStamp = Guid.NewGuid().ToString();
 

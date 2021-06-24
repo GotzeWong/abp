@@ -606,7 +606,7 @@ namespace Volo.Abp.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             Check.NotNull(user, nameof(user));
-            Check.NotNull(email, nameof(email));
+            //Check.NotNull(email, nameof(email));
 
             user.Email = email;
 

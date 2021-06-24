@@ -7,6 +7,7 @@ using Volo.Abp.Auditing;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.ObjectExtending;
 using Volo.Abp.Validation;
+using JetBrains.Annotations;
 
 namespace Volo.Abp.Identity.Web.Pages.Identity.Users
 {
@@ -72,6 +73,7 @@ namespace Volo.Abp.Identity.Web.Pages.Identity.Users
             public string Password { get; set; }
 
             //[Required]
+            [CanBeNull]
             [EmailAddress]
             [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxEmailLength))]
             public string Email { get; set; }

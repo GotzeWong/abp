@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -107,15 +108,15 @@ namespace Volo.Abp.Account.Web.Pages.Account
         {
             ValidateModel();
 
-            var userDto = await AccountAppService.RegisterAsync(
-                new RegisterDto
-                {
-                    AppName = "MVC",
-                    EmailAddress = Input.EmailAddress,
-                    Password = Input.Password,
-                    UserName = Input.UserName
-                }
-            );
+            var registerDto = new RegisterDto
+            {
+                AppName = "MVC",
+                EmailAddress = Input.EmailAddress ?? string.Empty,
+                Password = Input.Password,
+                UserName = Input.UserName
+            };
+
+            var userDto = await AccountAppService.RegisterAsync(registerDto);
 
             var user = await UserManager.GetByIdAsync(userDto.Id);
             await SignInManager.SignInAsync(user, isPersistent: true);

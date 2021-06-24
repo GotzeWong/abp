@@ -18,7 +18,9 @@ namespace Volo.Abp.Identity
         [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxSurnameLength))]
         public string Surname { get; set; }
 
-        [Required]
+        //[Required]
+        //[EmailAddress]
+        [CanBeNull]
         [EmailAddress]
         [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxEmailLength))]
         public string Email { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Volo.Abp.Account.Emailing;
@@ -49,7 +50,8 @@ namespace Volo.Abp.Account
 
             (await UserManager.CreateAsync(user, input.Password)).CheckErrors();
 
-            await UserManager.SetEmailAsync(user,input.EmailAddress);
+            if(!input.EmailAddress.IsNullOrWhiteSpace())
+                await UserManager.SetEmailAsync(user,input.EmailAddress);
             await UserManager.AddDefaultRolesAsync(user);
 
             return ObjectMapper.Map<IdentityUser, IdentityUserDto>(user);

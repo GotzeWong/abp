@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JetBrains.Annotations;
+using System;
+using System.ComponentModel.DataAnnotations;
 using Volo.Abp.Auditing;
 using Volo.Abp.Identity;
 using Volo.Abp.ObjectExtending;
@@ -13,7 +15,8 @@ namespace Volo.Abp.Account
         public string UserName { get; set; }
 
         //[Required]
-        [EmailAddress]
+        [CanBeNull]
+        //[EmailAddress]
         [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxEmailLength))]
         public string EmailAddress { get; set; }
 
@@ -25,5 +28,6 @@ namespace Volo.Abp.Account
 
         [Required]
         public string AppName { get; set; }
+
     }
 }
