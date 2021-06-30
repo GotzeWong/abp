@@ -121,5 +121,20 @@ namespace Volo.Abp.TenantManagement
             tenant.RemoveDefaultConnectionString();
             await TenantRepository.UpdateAsync(tenant);
         }
+
+        [Authorize(TenantManagementPermissions.Tenants.UpdateTrademark)]
+        public virtual async Task UpdateTrademarkAsync(Guid id, string TrademarkUrl)
+        {
+            var tenant = await TenantRepository.GetAsync(id);
+            tenant.SetTrademark(TrademarkUrl);
+            await TenantRepository.UpdateAsync(tenant);
+        }
+
+        [Authorize(TenantManagementPermissions.Tenants.GetTrademark)]
+        public virtual async Task<string> GetTrademarkAsync(Guid id)
+        {
+            var tenant = await TenantRepository.GetAsync(id);
+            return tenant?.Trademark;
+        }
     }
 }

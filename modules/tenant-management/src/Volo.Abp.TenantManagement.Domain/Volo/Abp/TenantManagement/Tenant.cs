@@ -89,5 +89,11 @@ namespace Volo.Abp.TenantManagement
         {
             Name = Check.NotNullOrWhiteSpace(name, nameof(name), TenantConsts.MaxNameLength);
         }
+
+        public virtual void SetTrademark(string trademrkUrl)
+        {
+            Trademark = trademrkUrl;
+        }
+
     }
 }

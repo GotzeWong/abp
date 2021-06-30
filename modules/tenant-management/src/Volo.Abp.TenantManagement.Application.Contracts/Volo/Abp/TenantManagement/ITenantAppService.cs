@@ -11,5 +11,9 @@ namespace Volo.Abp.TenantManagement
         Task UpdateDefaultConnectionStringAsync(Guid id, string defaultConnectionString);
 
         Task DeleteDefaultConnectionStringAsync(Guid id);
+
+        Task UpdateTrademarkAsync(Guid id, string TrademarkUrl);
+        Task<string> GetTrademarkAsync(Guid id);
+
     }
 }
