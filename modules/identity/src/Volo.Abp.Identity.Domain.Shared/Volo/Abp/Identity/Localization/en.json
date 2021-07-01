@@ -72,6 +72,7 @@
     "Identity.OrganizationUnit.MaxUserMembershipCount": "Maximum allowed organization unit membership count for a user",
     "Permission:IdentityManagement": "Identity management",
     "Permission:RoleManagement": "Role management",
+    "Permission:OrganizationManagement": "Organization management",
     "Permission:Create": "Create",
     "Permission:Edit": "Edit",
     "Permission:Delete": "Delete",

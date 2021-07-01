@@ -33,6 +33,9 @@ namespace Volo.Abp.Identity
         /// </summary>
         public virtual string DisplayName { get; set; }
 
+        public virtual OrganizationUnitStatus Status { get; set; }
+
+
         /// <summary>
         /// Roles of this OU.
         /// </summary>
@@ -60,6 +63,7 @@ namespace Volo.Abp.Identity
             DisplayName = displayName;
             ParentId = parentId;
             Roles = new Collection<OrganizationUnitRole>();
+            Status = OrganizationUnitStatus.Enable;
         }
 
         /// <summary>

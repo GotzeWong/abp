@@ -22,6 +22,12 @@ namespace Volo.Abp.Identity
             usersPermission.AddChild(IdentityPermissions.Users.Delete, L("Permission:Delete"));
             usersPermission.AddChild(IdentityPermissions.Users.ManagePermissions, L("Permission:ChangePermissions"));
 
+            var oirganizationsPermission = identityGroup.AddPermission(IdentityPermissions.Organizations.Default, L("Permission:OrganizationManagement"));
+            oirganizationsPermission.AddChild(IdentityPermissions.Organizations.Create, L("Permission:Create"));
+            oirganizationsPermission.AddChild(IdentityPermissions.Organizations.Update, L("Permission:Edit"));
+            oirganizationsPermission.AddChild(IdentityPermissions.Organizations.Delete, L("Permission:Delete"));
+            oirganizationsPermission.AddChild(IdentityPermissions.Organizations.ManagePermissions, L("Permission:ChangePermissions"));
+
             identityGroup
                 .AddPermission(IdentityPermissions.UserLookup.Default, L("Permission:UserLookup"))
                 .WithProviders(ClientPermissionValueProvider.ProviderName);

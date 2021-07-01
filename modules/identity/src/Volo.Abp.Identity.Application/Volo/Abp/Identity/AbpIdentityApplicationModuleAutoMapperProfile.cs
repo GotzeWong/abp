@@ -13,6 +13,9 @@ namespace Volo.Abp.Identity
             CreateMap<IdentityRole, IdentityRoleDto>()
                 .MapExtraProperties();
 
+            CreateMap<OrganizationUnit, OrganizationUnitDto>()
+                .MapExtraProperties();
+
             CreateMap<IdentityUser, ProfileDto>()
                 .ForMember(dest => dest.HasPassword,
                     op => op.MapFrom(src => src.PasswordHash != null))

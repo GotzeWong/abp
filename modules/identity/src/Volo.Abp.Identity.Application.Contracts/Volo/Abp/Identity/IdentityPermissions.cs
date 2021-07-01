@@ -24,6 +24,15 @@ namespace Volo.Abp.Identity
             public const string ManagePermissions = Default + ".ManagePermissions";
         }
 
+        public static class Organizations
+        {
+            public const string Default = GroupName + ".Organizations";
+            public const string Create = Default + ".Create";
+            public const string Update = Default + ".Update";
+            public const string Delete = Default + ".Delete";
+            public const string ManagePermissions = Default + ".ManagePermissions";
+        }
+
         public static class UserLookup
         {
             public const string Default = GroupName + ".UserLookup";
