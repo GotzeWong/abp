@@ -12,6 +12,8 @@ namespace Volo.Abp.Identity
         public string DisplayName { get; set; }
         public Guid? ParentId { get; set; }
         public OrganizationUnitStatus Status { get; set; }
+        public int OrderNo { get; set; }
+        public string Remark { get; set; }
 
         protected OrganizationUnitCreateOrUpdateDtoBase() : base(false)
         {

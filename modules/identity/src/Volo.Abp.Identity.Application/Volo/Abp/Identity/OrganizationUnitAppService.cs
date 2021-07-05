@@ -23,12 +23,33 @@ namespace Volo.Abp.Identity
             OrganizationRepository = organizationRepository;
         }
 
-        public Task<ListResultDto<OrganizationUnitDto>> GetAllListAsync()
+
+        public virtual async Task<ListResultDto<OrganizationUnitDto>> GetAllListAsync()
         {
-            throw new NotImplementedException();
+            return ObjectMapper.Map<List<OrganizationUnit>, ListResultDto<OrganizationUnitDto>>(await OrganizationRepository.GetListAsync());
         }
 
-        public async Task<OrganizationUnitDto> GetAsync(Guid id)
+        public virtual async Task<List<OrganizationUnitParentDto>> GetArrangedListAsync()
+        {
+            //throw new NotImplementedException();
+            var list = await OrganizationRepository.GetChildrenAsync(null);
+
+            var ouVueList = new List<OrganizationUnitParentDto>();
+
+            foreach (OrganizationUnit oud in list)
+            {
+                OrganizationUnitParentDto ouVue = ObjectMapper.Map<OrganizationUnit, OrganizationUnitParentDto>(oud);
+
+                ouVue.Children = ObjectMapper.Map<List<OrganizationUnit>, List<OrganizationUnitChildDto>>(await OrganizationRepository.GetAllChildrenWithParentCodeAsync(oud.Code, oud.Id));
+
+                ouVueList.Add(ouVue);
+            }
+
+            //return await Task.FromResult(ouVueList);
+            return new List<OrganizationUnitParentDto>(ouVueList);
+        }
+
+        public virtual async Task<OrganizationUnitDto> GetAsync(Guid id)
         {
             return ObjectMapper.Map<OrganizationUnit, OrganizationUnitDto>(
                 await OrganizationManager.GetByIdAsync(id)
@@ -45,12 +66,12 @@ namespace Volo.Abp.Identity
         {
             var ou = new OrganizationUnit(
                 GuidGenerator.Create(),
-                input.DisplayName,
+                input.DisplayName, 
+                input.OrderNo, 
+                input.Remark,
                 input.ParentId,
                 CurrentTenant.Id
-            )
-            {
-            };
+            );
 
             input.MapExtraPropertiesTo(ou);
 
@@ -77,9 +98,11 @@ namespace Volo.Abp.Identity
         {
             var ou = await OrganizationManager.GetByIdAsync(id);
             ou.ConcurrencyStamp = input.ConcurrencyStamp;
-
             ou.DisplayName = input.DisplayName;
-
+            ou.Remark = input.Remark;
+            ou.Status = input.Status;
+            ou.OrderNo = input.OrderNo;
+            
             input.MapExtraPropertiesTo(ou);
 
             await OrganizationManager.UpdateAsync(ou);
@@ -87,5 +110,6 @@ namespace Volo.Abp.Identity
 
             return ObjectMapper.Map<OrganizationUnit, OrganizationUnitDto>(ou);
         }
+
     }
 }

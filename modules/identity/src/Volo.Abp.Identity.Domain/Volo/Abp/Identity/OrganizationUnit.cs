@@ -35,6 +35,9 @@ namespace Volo.Abp.Identity
 
         public virtual OrganizationUnitStatus Status { get; set; }
 
+        public virtual int OrderNo { get; set; }
+
+        public virtual string Remark { get; set; }
 
         /// <summary>
         /// Roles of this OU.
@@ -64,6 +67,19 @@ namespace Volo.Abp.Identity
             ParentId = parentId;
             Roles = new Collection<OrganizationUnitRole>();
             Status = OrganizationUnitStatus.Enable;
+            OrderNo = 0;
+        }
+
+        public OrganizationUnit(Guid id, string displayName, int orderNo, string remark, Guid? parentId = null, Guid? tenantId = null)
+            : base(id)
+        {
+            TenantId = tenantId;
+            DisplayName = displayName;
+            ParentId = parentId;
+            Roles = new Collection<OrganizationUnitRole>();
+            Status = OrganizationUnitStatus.Enable;
+            OrderNo = orderNo;
+            Remark = remark;
         }
 
         /// <summary>

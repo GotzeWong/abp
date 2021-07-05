@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
@@ -57,6 +58,13 @@ namespace Volo.Abp.Identity
         public virtual Task DeleteAsync(Guid id)
         {
             return OrganizationUnitAppService.DeleteAsync(id);
+        }
+
+        [HttpGet]
+        [Route("list")]
+        public Task<List<OrganizationUnitParentDto>> GetArrangedListAsync()
+        {
+            return OrganizationUnitAppService.GetArrangedListAsync();
         }
     }
 }
