@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>DsPermissionManagement</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.AutoMapper" Version="4.3.3" />
+    <PackageReference Include="Volo.Abp.Ddd.Application" Version="4.3.3" />
+	  <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="4.3.3" />
+    <ProjectReference Include="..\DsPermissionManagement.Application.Contracts\DsPermissionManagement.Application.Contracts.csproj" />
+    <ProjectReference Include="..\DsPermissionManagement.Domain\DsPermissionManagement.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

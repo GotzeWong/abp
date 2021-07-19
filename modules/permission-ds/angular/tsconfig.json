@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.prod.json",
+  "compilerOptions": {
+    "paths": {
+      "@ds-permission-management": [
+        "projects/ds-permission-management/src/public-api.ts"
+      ],
+      "@ds-permission-management/config": [
+        "projects/ds-permission-management/config/src/public-api.ts"
+      ],
+      "@proxy": ["projects/ds-permission-management/src/lib/proxy/index.ts"],
+      "@proxy/*": ["projects/ds-permission-management/src/lib/proxy/*"]
+    }
+  }
+}
