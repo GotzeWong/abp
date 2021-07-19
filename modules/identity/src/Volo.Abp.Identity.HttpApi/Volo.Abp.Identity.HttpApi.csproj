@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\agenthub\shared\AgentHubLibrary\AgentHubLibrary.csproj" />
     <ProjectReference Include="..\Volo.Abp.Identity.Application.Contracts\Volo.Abp.Identity.Application.Contracts.csproj" />
     <ProjectReference Include="..\..\..\..\framework\src\Volo.Abp.AspNetCore.Mvc\Volo.Abp.AspNetCore.Mvc.csproj" />
   </ItemGroup>
