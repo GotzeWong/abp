@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 
 namespace Volo.Abp.IdentityServer.Jwt
@@ -7,7 +8,7 @@ namespace Volo.Abp.IdentityServer.Jwt
 
     public static class JwtTokenMiddleware
     {
-        public static IApplicationBuilder UseJwtTokenMiddleware(this IApplicationBuilder app, string schema)
+        public static IApplicationBuilder UseJwtTokenMiddleware(this IApplicationBuilder app, string schema = JwtBearerDefaults.AuthenticationScheme)
         {
             return app.Use(async (ctx, next) =>
             {
