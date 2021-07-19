@@ -51,6 +51,12 @@ namespace Volo.Abp.Features
             {
                 options.MapCodeNamespace("Volo.Feature", typeof(AbpFeatureResource));
             });
+
+            // Author: SeanF
+            // Add options for reading configuration
+            var configuration = context.Services.GetConfiguration();
+            Configure<FeatureGroupDefinitionConfigOptions>(configuration);
+
         }
 
         private static void AutoAddDefinitionProviders(IServiceCollection services)

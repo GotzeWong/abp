@@ -168,6 +168,20 @@ namespace Volo.Abp.Features
             return feature;
         }
 
+        /// <summary>
+        /// Author: SeanF
+        /// AddChild for configuration
+        /// </summary>
+        /// <param name="child"></param>
+        public void AddChild(FeatureDefinition child)
+        {
+            if (child != null)
+            {
+                child.Parent = this;
+                _children.Add(child);
+            }
+        }
+
         public void RemoveChild(string name)
         {
             var featureToRemove = _children.FirstOrDefault(f => f.Name == name);

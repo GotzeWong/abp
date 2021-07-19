@@ -20,9 +20,39 @@ namespace Volo.Abp.Features
 
         private readonly IServiceScopeFactory _serviceScopeFactory;
 
+
+        /* Original ABP framework constructor */
+        //public FeatureDefinitionManager(
+        //    IOptions<AbpFeatureOptions> options,
+        //    IServiceScopeFactory serviceScopeFactory)
+        //{
+        //    _serviceScopeFactory = serviceScopeFactory;
+        //    Options = options.Value;
+
+        //    _lazyFeatureDefinitions = new Lazy<Dictionary<string, FeatureDefinition>>(
+        //        CreateFeatureDefinitions,
+        //        isThreadSafe: true
+        //    );
+
+        //    _lazyFeatureGroupDefinitions = new Lazy<Dictionary<string, FeatureGroupDefinition>>(
+        //        CreateFeatureGroupDefinitions,
+        //        isThreadSafe:true
+        //    );
+        //}
+
+        private readonly FeatureGroupDefinitionConfigOptions _monitorFeatureGroupDefinitionOptions;
+        
+        /// <summary>
+        /// Author: SeanF
+        /// Add parameter for reading configuration with IMonitorOptions Type
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="serviceScopeFactory"></param>
+        /// <param name="monitorOptions"></param>
         public FeatureDefinitionManager(
             IOptions<AbpFeatureOptions> options,
-            IServiceScopeFactory serviceScopeFactory)
+            IServiceScopeFactory serviceScopeFactory,
+            IOptionsMonitor<FeatureGroupDefinitionConfigOptions> monitorOptions)
         {
             _serviceScopeFactory = serviceScopeFactory;
             Options = options.Value;
@@ -34,8 +64,10 @@ namespace Volo.Abp.Features
 
             _lazyFeatureGroupDefinitions = new Lazy<Dictionary<string, FeatureGroupDefinition>>(
                 CreateFeatureGroupDefinitions,
-                isThreadSafe:true
+                isThreadSafe: true
             );
+
+            _monitorFeatureGroupDefinitionOptions = monitorOptions.CurrentValue;
         }
 
         public virtual FeatureDefinition Get(string name)
@@ -99,24 +131,43 @@ namespace Volo.Abp.Features
             }
         }
 
+        /* ABP original methods */
+        //protected virtual Dictionary<string, FeatureGroupDefinition> CreateFeatureGroupDefinitions()
+        //{
+        //    var context = new FeatureDefinitionContext();
+
+        //    using (var scope = _serviceScopeFactory.CreateScope())
+        //    {
+        //        var providers = Options
+        //            .DefinitionProviders
+        //            .Select(p => scope.ServiceProvider.GetRequiredService(p) as IFeatureDefinitionProvider)
+        //            .ToList();
+
+        //        foreach (var provider in providers)
+        //        {
+        //            provider.Define(context);
+        //        }
+        //    }
+
+        //    return context.Groups;
+        //}
+
         protected virtual Dictionary<string, FeatureGroupDefinition> CreateFeatureGroupDefinitions()
         {
-            var context = new FeatureDefinitionContext();
 
-            using (var scope = _serviceScopeFactory.CreateScope())
+
+            // Result feature group definitions
+            var groups = new Dictionary<string, FeatureGroupDefinition>();
+
+            var groupConfigs = _monitorFeatureGroupDefinitionOptions.FeatureGroupDefinitions;
+
+            foreach (var groupConfig in groupConfigs)
             {
-                var providers = Options
-                    .DefinitionProviders
-                    .Select(p => scope.ServiceProvider.GetRequiredService(p) as IFeatureDefinitionProvider)
-                    .ToList();
-
-                foreach (var provider in providers)
-                {
-                    provider.Define(context);
-                }
+                groups.Add(groupConfig.Key, groupConfig.Value.ConfigFeatureDefinition());
             }
 
-            return context.Groups;
+
+            return groups;
         }
     }
 }

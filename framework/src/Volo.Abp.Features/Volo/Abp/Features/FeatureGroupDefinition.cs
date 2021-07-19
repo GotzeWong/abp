@@ -71,6 +71,20 @@ namespace Volo.Abp.Features
             return feature;
         }
 
+        /// <summary>
+        /// Author: SeanF
+        /// overload with parameter difference: AddFeature for configuration
+        /// </summary>
+        /// <param name="feature"></param>
+        public virtual void AddFeature(FeatureDefinition feature)
+        {
+            if (feature != null)
+            {
+                _features.Add(feature);
+            }
+
+        }
+
         public virtual List<FeatureDefinition> GetFeaturesWithChildren()
         {
             var features = new List<FeatureDefinition>();
