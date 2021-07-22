@@ -1,7 +1,6 @@
 ﻿using System;
-using System;
 using System.Threading.Tasks;
-using AgentHubLibrary;
+using AgentHub.Shared;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Mvc;
