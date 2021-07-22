@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Aliyun.OSS;
+using AgentHub.Shared.OSSUtils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.AspNetCore.Mvc;
 
@@ -17,9 +18,13 @@ namespace Volo.Abp.TenantManagement
     {
         protected ITenantAppService TenantAppService { get; }
 
-        public TenantController(ITenantAppService tenantAppService)
+        private readonly IConfiguration _configuration;
+
+        public TenantController(ITenantAppService tenantAppService,
+            IConfiguration configuration)
         {
             TenantAppService = tenantAppService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -94,10 +99,13 @@ namespace Volo.Abp.TenantManagement
             var filename = Guid.NewGuid() +Path.GetExtension(file.FileName);
 
             //Todo 判断是否是图片
+            //Todo 判断是否重复上传
 
             var objectName = id + "/" + datetime + "/" + filename;
 
-            var tm_url = OssHelper.PutObject(OssHelper.BUCKET_TRADEMARK, objectName, file);
+            var ossConfig = new OssConfig(_configuration["Oss:AccessKeyId"], 
+                _configuration["Oss:AccessKeySecret"]);
+            var tm_url = OssHelper.PutObject(ossConfig, OssConfig.BUCKET_TRADEMARK, objectName, file);
 
             await TenantAppService.UpdateTrademarkAsync(id, tm_url);
             
