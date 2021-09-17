@@ -7,7 +7,7 @@ namespace Volo.Abp.Identity
     public class IdentityDataSeedContributor : IDataSeedContributor, ITransientDependency
     {
         public const string AdminEmailPropertyName = "AdminEmail";
-        public const string AdminEmailDefaultValue = "admin@abp.io";
+        public const string AdminEmailDefaultValue = "admin@dynamicsales.cn";
         public const string AdminPasswordPropertyName = "AdminPassword";
         public const string AdminPasswordDefaultValue = "1q2w3E*";
 

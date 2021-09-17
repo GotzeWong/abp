@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
@@ -85,6 +87,49 @@ namespace Volo.Abp.Identity
         public virtual Task<IdentityUserDto> FindByEmailAsync(string email)
         {
             return UserAppService.FindByEmailAsync(email);
+        }
+
+        [HttpGet]
+        [Route("search")]
+        public async Task<PagedResultDto<IdentityUserDetailDto>> SearchListAsync(IdentityUserPagedListDto input)
+        {
+            return  await UserAppService.SearchListAsync(input);
+
+        }
+
+        [HttpPost]
+        [Route("batchcreate")]
+        public Task BatchCreateAsync(Guid? tenantId, List<IdentityUserExcelDto> users)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("vuecreate")]
+        public Task<IdentityUserDetailDto> VueCreateAsync(IdentityUserVueCreateDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPut]
+        [Route("vueupdate/{id}")]
+        public Task<IdentityUserDetailDto> VueUpdateAsync(Guid id, IdentityUserVueUpdateDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("export")]
+        public Task<MemoryStream> DownloadIdentityUserAsync(IdentityUserPagedListDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("{id}/granted-organizations")]
+        public async Task<List<GrantedOrganizationDto>> GetGrantedOrganizationAsync(Guid id)
+        {
+            return await UserAppService.GetGrantedOrganizationAsync(id);
         }
     }
 }

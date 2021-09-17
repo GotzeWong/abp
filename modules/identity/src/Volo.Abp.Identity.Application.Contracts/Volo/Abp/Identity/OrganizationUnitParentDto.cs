@@ -5,6 +5,9 @@ namespace Volo.Abp.Identity
 {
     public class OrganizationUnitParentDto : OrganizationUnitChildDto
     {
-        public List<OrganizationUnitChildDto> Children { get; set; }
+        public long AllMembers { get; set; }
+        public long Total { get; set; }
+        public List<OrganizationUnitParentDto> Children { get; set; }
+        public List<IdentityUserLeadertDto> Leaders { get; set; }
     }
 }

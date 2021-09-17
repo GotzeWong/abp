@@ -9,8 +9,8 @@ using Volo.Abp.AspNetCore.Mvc;
 namespace Volo.Abp.Identity
 {
     [RemoteService(Name = IdentityRemoteServiceConsts.RemoteServiceName)]
-    [Area("organization")]
-    [ControllerName("VueOrganization")]
+    [Area("organizationunit")]
+    [ControllerName("VueOrganizationUnit")]
     [Route("vue/api/identity/organizations")]
     public class OrganizationUnitVueController : AbpController
     {
@@ -23,15 +23,15 @@ namespace Volo.Abp.Identity
 
         [HttpGet]
         [Route("all")]
-        public virtual async Task<VueTResultDto<ListResultDto<OrganizationUnitDto>>> GetAllListAsync()
+        public virtual async Task<VueTResultDto<List<OrganizationUnitDto>>> GetAllListAsync()
         {
-            return new VueTResultDto<ListResultDto<OrganizationUnitDto>>(await OrganizationUnitAppService.GetAllListAsync());
+            return new VueTResultDto<List<OrganizationUnitDto>>(await OrganizationUnitAppService.GetAllListAsync());
         }
 
         [HttpGet]
-        public virtual async Task<VueTResultDto<PagedResultDto<OrganizationUnitDto>>> GetListAsync(GetOrganizationUnitsInput input)
+        public virtual async Task<VueTResultDto<PagedResultDto<OrganizationUnitDto>>> GetListAsync(OrganizationUnitPagedListDto input)
         {
-            return new VueTResultDto<PagedResultDto<OrganizationUnitDto>>(await OrganizationUnitAppService.GetListAsync(input));
+            return new VueTResultDto<PagedResultDto<OrganizationUnitDto>>(await OrganizationUnitAppService.SearchListAsync(input));
         }
 
         [HttpGet]
@@ -63,10 +63,57 @@ namespace Volo.Abp.Identity
         }
 
         [HttpGet]
-        [Route("list")]
-        public async Task<VueTResultDto<List<OrganizationUnitParentDto>>> GetArrangedListAsync()
+        [Route("tree/{id?}")]
+        public async Task<VueTResultDto<List<OrganizationUnitParentDto>>> GetTreeListAsync(Guid? id)
         {
-            return new VueTResultDto<List<OrganizationUnitParentDto>>(await OrganizationUnitAppService.GetArrangedListAsync());
+            return new VueTResultDto<List<OrganizationUnitParentDto>>(await OrganizationUnitAppService.GetTreeListAsync(id));
+        }
+
+        [HttpGet]
+        [Route("menu")]
+        public async Task<VueTResultDto<List<OrganizationUnitMenuDto>>> GetMenuListAsync()
+        {
+            return new VueTResultDto<List<OrganizationUnitMenuDto>>(await OrganizationUnitAppService.GetMenuListAsync());
+        }
+
+        [HttpPost]
+        [Route("batch-create")]
+        public async Task<VueResultDto> BatchCreateAsync(Guid? tenantId, List<OrganizationUnitExcelDto> orgs)
+        {
+            await OrganizationUnitAppService.BatchCreateAsync(tenantId, orgs);
+            return new VueTResultDto<bool>(true);
+        }
+
+        [HttpGet]
+        [Route("export")]
+        public async Task<IActionResult> DownloadOrganizationUnitAsync(OrganizationUnitPagedListDto input)
+        {
+            var stream = await OrganizationUnitAppService.DownloadOrganizationUnitAsync(input);
+            return File(stream.ToArray(), HttpFileType.Excel, "部门信息表" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
+        }
+
+        [HttpPost]
+        [Route("bind")]
+        public async Task<VueResultDto> BindAsync(OrganizationUnitBindDto input)
+        {
+            await OrganizationUnitAppService.BindAsync(input);
+            return new VueTResultDto<bool>(true);
+        }
+
+        [HttpPost]
+        [Route("unbind")]
+        public async Task<VueResultDto> UnbindAsync(OrganizationUnitUnbindDto input)
+        {
+            await OrganizationUnitAppService.UnbindAsync(input);
+            return new VueTResultDto<bool>(true);
+        }
+
+        [HttpPost]
+        [Route("set-leader")]
+        public async Task<VueResultDto> SetLeaderAsync(OrganizationUnitLeaderDto input)
+        {
+            await OrganizationUnitAppService.SetLeaderAsync(input);
+            return new VueTResultDto<bool>(true);
         }
     }
 

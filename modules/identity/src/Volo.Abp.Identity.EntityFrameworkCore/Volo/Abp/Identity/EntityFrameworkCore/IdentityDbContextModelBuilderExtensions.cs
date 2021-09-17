@@ -31,7 +31,7 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
                 b.Property(u => u.NormalizedUserName).IsRequired()
                     .HasMaxLength(IdentityUserConsts.MaxNormalizedUserNameLength)
                     .HasColumnName(nameof(IdentityUser.NormalizedUserName));
-                b.Property(u => u.NormalizedEmail).IsRequired()
+                b.Property(u => u.NormalizedEmail)
                     .HasMaxLength(IdentityUserConsts.MaxNormalizedEmailLength)
                     .HasColumnName(nameof(IdentityUser.NormalizedEmail));
                 b.Property(u => u.PasswordHash).HasMaxLength(IdentityUserConsts.MaxPasswordHashLength)
@@ -230,6 +230,8 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
 
                 b.HasIndex(ou => new {ou.UserId, ou.OrganizationUnitId});
 
+                b.Property(r => r.IsLeader).HasDefaultValue(false).HasColumnName(nameof(IdentityUserOrganizationUnit.IsLeader));
+
                 b.ApplyObjectExtensionMappings();
             });
 
@@ -259,6 +261,24 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
 
                 b.ApplyObjectExtensionMappings();
             });
+
+            builder.Entity<TemporaryAccessPermission>(b =>
+            {
+                b.ToTable(options.TablePrefix + "TemporaryPermissions", options.Schema);
+                b.ConfigureByConvention();
+
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
+                b.HasKey(tp => new { tp.Id });
+
+                b.HasOne(e => e.GrantUser).WithMany().IsRequired();
+                b.HasOne(e => e.TemporaryUser).WithMany().IsRequired();
+
+                b.Property(r => r.IsOpen).HasDefaultValue(true).HasColumnName(nameof(TemporaryAccessPermission.IsOpen));
+
+                //b.HasIndex(tp => new { tp.GrantUser.Id, tp.TemporaryUser.Id });
+                b.ApplyObjectExtensionMappings();
+            });
+
 
             if (builder.IsHostDatabase())
             {

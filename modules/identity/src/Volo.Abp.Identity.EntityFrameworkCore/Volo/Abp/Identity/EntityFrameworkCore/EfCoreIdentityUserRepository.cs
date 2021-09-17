@@ -136,8 +136,6 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
             int skipCount = 0,
             string filter = null,
             bool includeDetails = false,
-            Guid? roleId = null,
-            Guid? organizationUnitId = null,
             CancellationToken cancellationToken = default)
         {
             return await (await GetDbSetAsync())
@@ -151,12 +149,86 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
                         (u.Surname != null && u.Surname.Contains(filter)) ||
                         (u.PhoneNumber != null && u.PhoneNumber.Contains(filter))
                 )
-                .WhereIf(roleId.HasValue, identityUser => identityUser.Roles.Any(x => x.RoleId == roleId.Value))
-                .WhereIf(organizationUnitId.HasValue, identityUser => identityUser.OrganizationUnits.Any(x => x.OrganizationUnitId == organizationUnitId.Value))
                 .OrderBy(sorting.IsNullOrWhiteSpace() ? nameof(IdentityUser.UserName) : sorting)
                 .PageBy(skipCount, maxResultCount)
                 .ToListAsync(GetCancellationToken(cancellationToken));
         }
+
+        public virtual async Task<List<IdentityUser>> GetPagedListAsync(
+            Guid? roleId,
+            Guid? orgId,
+            string username = null,
+            string name = null,
+            string surname = null,
+            string email = null,
+            string phonenumber = null,
+            string filter = null,
+            int skipCount = 0,
+            int maxResultCount = int.MaxValue,
+            string sorting = null,
+            bool includeDetails = true,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return await (await GetDbSetAsync())
+                    .Include(x => x.Roles)
+                    .Include(x => x.OrganizationUnits)
+                    .WhereIf(roleId != null, x => x.Roles.Any(r=>r.RoleId == roleId))
+                    .WhereIf(orgId != null, x => x.OrganizationUnits.Any(r => r.OrganizationUnitId == orgId))
+                    .WhereIf(
+                        !filter.IsNullOrWhiteSpace(),
+                        u =>
+                            u.UserName.Contains(filter) ||
+                            u.Email.Contains(filter) ||
+                            (u.Name != null && u.Name.Contains(filter)) ||
+                            (u.Surname != null && u.Surname.Contains(filter)) ||
+                            (u.PhoneNumber != null && u.PhoneNumber.Contains(filter))
+                    )
+                    .WhereIf(!username.IsNullOrWhiteSpace(), b => b.UserName.Contains(username))
+                    .WhereIf(!email.IsNullOrWhiteSpace(), b => b.Email.Contains(email))
+                    .WhereIf(!name.IsNullOrWhiteSpace(), b => b.Name.Contains(name))
+                    .WhereIf(!surname.IsNullOrWhiteSpace(), b => b.Surname.Contains(surname))
+                    .WhereIf(!phonenumber.IsNullOrWhiteSpace(), b => b.PhoneNumber.Contains(phonenumber))
+                    .OrderBy(sorting.IsNullOrWhiteSpace() ? nameof(IdentityUser.UserName) : sorting)
+                    .PageBy(skipCount, maxResultCount)
+                    .ToListAsync(GetCancellationToken(cancellationToken));
+
+        }
+
+        public virtual async Task<long> GetPagedListCountAsync(
+            Guid? roleId,
+            Guid? orgId,
+            string username = null,
+            string name = null,
+            string surname = null,
+            string email = null,
+            string phonenumber = null,
+            string filter = null,
+            CancellationToken cancellationToken = default
+        )
+        {
+            return await (await GetDbSetAsync())
+                    .Include(x => x.Roles)
+                    .Include(x => x.OrganizationUnits)
+                    .WhereIf(roleId != null, x => x.Roles.Any(r => r.RoleId == roleId))
+                    .WhereIf(orgId != null, x => x.OrganizationUnits.Any(r => r.OrganizationUnitId == orgId))
+                    .WhereIf(
+                        !filter.IsNullOrWhiteSpace(),
+                        u =>
+                            u.UserName.Contains(filter) ||
+                            u.Email.Contains(filter) ||
+                            (u.Name != null && u.Name.Contains(filter)) ||
+                            (u.Surname != null && u.Surname.Contains(filter)) ||
+                            (u.PhoneNumber != null && u.PhoneNumber.Contains(filter))
+                    )
+                    .WhereIf(!username.IsNullOrWhiteSpace(), b => b.UserName.Contains(username))
+                    .WhereIf(!email.IsNullOrWhiteSpace(), b => b.Email.Contains(email))
+                    .WhereIf(!name.IsNullOrWhiteSpace(), b => b.Name.Contains(name))
+                    .WhereIf(!surname.IsNullOrWhiteSpace(), b => b.Surname.Contains(surname))
+                    .WhereIf(!phonenumber.IsNullOrWhiteSpace(), b => b.PhoneNumber.Contains(phonenumber))
+                    .LongCountAsync(GetCancellationToken(cancellationToken));
+        }
+
 
         public virtual async Task<List<IdentityRole>> GetRolesAsync(
             Guid id,
@@ -190,8 +262,6 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
 
         public virtual async Task<long> GetCountAsync(
             string filter = null,
-            Guid? roleId = null,
-            Guid? organizationUnitId = null,
             CancellationToken cancellationToken = default)
         {
             return await (await GetDbSetAsync())
@@ -204,8 +274,6 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
                         (u.Surname != null && u.Surname.Contains(filter)) ||
                         (u.PhoneNumber != null && u.PhoneNumber.Contains(filter))
                 )
-                .WhereIf(roleId.HasValue, identityUser => identityUser.Roles.Any(x => x.RoleId == roleId.Value))
-                .WhereIf(organizationUnitId.HasValue, identityUser => identityUser.OrganizationUnits.Any(x => x.OrganizationUnitId == organizationUnitId.Value))
                 .LongCountAsync(GetCancellationToken(cancellationToken));
         }
 
@@ -224,6 +292,21 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
             return await query.ToListAsync(GetCancellationToken(cancellationToken));
         }
 
+        public virtual async Task<List<IdentityUserOrganizationUnit>> GetUserOrganizationUnitsAsync(
+            Guid id,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default)
+        {
+            var dbContext = await GetDbContextAsync();
+
+            var query = from userOu in dbContext.Set<IdentityUserOrganizationUnit>()
+                    join ou in dbContext.OrganizationUnits.IncludeDetails(includeDetails) on userOu.OrganizationUnitId equals ou.Id
+                    where userOu.UserId == id
+                    select userOu;
+
+            return await query.ToListAsync(GetCancellationToken(cancellationToken));
+        }
+
         public virtual async Task<List<IdentityUser>> GetUsersInOrganizationUnitAsync(
             Guid organizationUnitId,
             CancellationToken cancellationToken = default
@@ -237,6 +320,17 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
                         select user;
 
             return await query.ToListAsync(GetCancellationToken(cancellationToken));
+        }
+
+
+        public virtual async Task<long> GetUsersCountInOrganizationUnitAsync(
+            Guid organizationUnitId,
+            CancellationToken cancellationToken = default)
+        {
+            return await (await GetDbSetAsync())
+                    .Include(x => x.OrganizationUnits)
+                    .WhereIf(organizationUnitId != null, x => x.OrganizationUnits.Any(r => r.OrganizationUnitId == organizationUnitId))
+                    .LongCountAsync(GetCancellationToken(cancellationToken));
         }
 
         public virtual async Task<List<IdentityUser>> GetUsersInOrganizationsListAsync(

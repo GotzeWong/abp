@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AgentHub.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,9 @@ using Volo.Abp.AspNetCore.Mvc;
 
 namespace Volo.Abp.Identity
 {
+    /// <summary>
+    /// 身份管理模块
+    /// </summary>
     [RemoteService(Name = IdentityRemoteServiceConsts.RemoteServiceName)]
     [Area("identity")]
     [ControllerName("VueUser")]
@@ -20,6 +24,7 @@ namespace Volo.Abp.Identity
             UserAppService = userAppService;
         }
 
+
         [HttpGet]
         [Route("{id}")]
         public virtual async Task<VueTResultDto<IdentityUserDto>> GetAsync(Guid id)
@@ -27,23 +32,46 @@ namespace Volo.Abp.Identity
             return new VueTResultDto<IdentityUserDto>(await UserAppService.GetAsync(id));
         }
 
+        //[HttpGet]
+        //public virtual async Task<VueTResultDto<PagedResultDto<IdentityUserDto>>> GetListAsync(GetIdentityUsersInput input)
+        //{
+        //    return new VueTResultDto<PagedResultDto<IdentityUserDto>>(await UserAppService.GetListAsync(input));
+        //}
+
         [HttpGet]
-        public virtual async Task<VueTResultDto<PagedResultDto<IdentityUserDto>>> GetListAsync(GetIdentityUsersInput input)
+        public async Task<VueTResultDto<PagedResultDto<IdentityUserDetailDto>>> GetListAsync(IdentityUserPagedListDto input)
         {
-            return new VueTResultDto<PagedResultDto<IdentityUserDto>>(await UserAppService.GetListAsync(input));
+            return new VueTResultDto<PagedResultDto<IdentityUserDetailDto>>(await UserAppService.SearchListAsync(input));
         }
 
+        /// <summary>
+        /// 创建用户
+        /// </summary>
+        /// <remarks>
+        /// <para>{</para>
+        /// <para>tenantId：Guid，nullable</para>
+        /// <para>userName：string，required</para>
+        /// <para>password：string，required</para>
+        /// <para>name：string，nullable</para>
+        /// <para>surname：string，nullable</para>
+        /// <para>phoneNumber：int，nullable</para>
+        /// <para>lockoutEnabled：bool</para>
+        /// <para>roleNames：string，string[]</para>
+        /// <para>}</para>
+        /// </remarks>
+        /// <param name="input"></param>
+        /// <returns></returns>
         [HttpPost]
-        public virtual async Task<VueTResultDto<IdentityUserDto>> CreateAsync(IdentityUserCreateDto input)
+        public virtual async Task<VueTResultDto<IdentityUserDetailDto>> CreateAsync(IdentityUserVueCreateDto input)
         {
-            return new VueTResultDto<IdentityUserDto>(await UserAppService.CreateAsync(input));
+            return new VueTResultDto<IdentityUserDetailDto>(await UserAppService.VueCreateAsync(input));
         }
 
         [HttpPut]
         [Route("{id}")]
-        public virtual async Task<VueTResultDto<IdentityUserDto>> UpdateAsync(Guid id, IdentityUserUpdateDto input)
+        public virtual async Task<VueTResultDto<IdentityUserDetailDto>> UpdateAsync(Guid id, IdentityUserVueUpdateDto input)
         {
-            return new VueTResultDto<IdentityUserDto>(await UserAppService.UpdateAsync(id, input));
+            return new VueTResultDto<IdentityUserDetailDto>(await UserAppService.VueUpdateAsync(id, input));
         }
 
         [HttpDelete]
@@ -70,9 +98,10 @@ namespace Volo.Abp.Identity
 
         [HttpPut]
         [Route("{id}/roles")]
-        public virtual Task UpdateRolesAsync(Guid id, IdentityUserUpdateRolesDto input)
+        public virtual async Task<VueResultDto> UpdateRolesAsync(Guid id, IdentityUserUpdateRolesDto input)
         {
-            return UserAppService.UpdateRolesAsync(id, input);
+            await UserAppService.UpdateRolesAsync(id, input);
+            return new VueTResultDto<bool>(true);
         }
 
         [HttpGet]
@@ -87,6 +116,22 @@ namespace Volo.Abp.Identity
         public virtual async Task<VueTResultDto<IdentityUserDto>> FindByEmailAsync(string email)
         {
             return new VueTResultDto<IdentityUserDto>(await UserAppService.FindByEmailAsync(email));
+        }
+
+        [HttpPost]
+        [Route("batch-create")]
+        public async Task<VueResultDto> BatchCreateAsync(Guid? tenantId, List<IdentityUserExcelDto> users)
+        {
+            await UserAppService.BatchCreateAsync(tenantId, users);
+            return new VueTResultDto<bool>(true);
+        }
+
+        [HttpGet]
+        [Route("export")]
+        public async Task<IActionResult> DownloadIdentityUserAsync(IdentityUserPagedListDto input)
+        {
+            var stream = await UserAppService.DownloadIdentityUserAsync(input);
+            return File(stream.ToArray(), HttpFileType.Excel, "用户信息表" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx");
         }
     }
 }

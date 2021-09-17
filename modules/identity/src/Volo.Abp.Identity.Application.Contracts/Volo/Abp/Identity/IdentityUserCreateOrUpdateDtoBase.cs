@@ -25,6 +25,9 @@ namespace Volo.Abp.Identity
         [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxEmailLength))]
         public string Email { get; set; }
 
+
+        [DataType(DataType.PhoneNumber)]
+        [RegularExpression(@"^1\d{10}$", ErrorMessage = "非法手机号")]
         [DynamicStringLength(typeof(IdentityUserConsts), nameof(IdentityUserConsts.MaxPhoneNumberLength))]
         public string PhoneNumber { get; set; }
 

@@ -18,6 +18,11 @@ namespace Volo.Abp.Identity
         )]
     public class AbpIdentityDomainSharedModule : AbpModule
     {
+        public override void PreConfigureServices(ServiceConfigurationContext context)
+        {
+            IdentityModuleExtensionConfigurator.Configure();
+        }
+
         public override void ConfigureServices(ServiceConfigurationContext context)
         {
             Configure<AbpVirtualFileSystemOptions>(options =>

@@ -120,10 +120,10 @@ namespace Volo.Abp.Identity
 
         public virtual async Task AddToOrganizationUnitAsync(Guid userId, Guid ouId)
         {
-            await AddToOrganizationUnitAsync(
-                await UserRepository.GetAsync(userId, cancellationToken: CancellationToken),
-                await OrganizationUnitRepository.GetAsync(ouId, cancellationToken: CancellationToken)
-            );
+            var user = await UserRepository.GetAsync(userId, cancellationToken: CancellationToken);
+            var ou = await OrganizationUnitRepository.GetAsync(ouId, cancellationToken: CancellationToken);
+
+            await AddToOrganizationUnitAsync(user, ou);
         }
 
         public virtual async Task AddToOrganizationUnitAsync(IdentityUser user, OrganizationUnit ou)
@@ -166,6 +166,46 @@ namespace Volo.Abp.Identity
             );
         }
 
+        public virtual async Task SetOrganizationUnitsAsync(Guid userId, Guid organizationUnitId, params Guid[] leaderIds)
+        {
+            if (leaderIds.IsNullOrEmpty())
+                await SetOrganizationUnitsAsync(
+                    await UserRepository.GetAsync(userId, cancellationToken: CancellationToken),
+                    organizationUnitId
+                );
+            else
+                await SetOrganizationUnitsAsync(
+                                await UserRepository.GetAsync(userId, cancellationToken: CancellationToken),
+                                organizationUnitId,
+                                leaderIds
+                            );
+        }
+
+        public virtual async Task SetOrganizationUnitsAsync(Guid userId, Guid organizationUnitId, bool isLeader)
+        {
+            await SetOrganizationUnitsAsync(
+                await UserRepository.GetAsync(userId, cancellationToken: CancellationToken),
+                organizationUnitId,
+                isLeader
+            );
+        }
+
+
+        public virtual async Task SetOrganizationUnitsAsync(Guid userId, Guid[] organizationUnitIds, Guid[] chargeIds)
+        {
+            if(chargeIds.IsNullOrEmpty())
+                await SetOrganizationUnitsAsync(
+                    await UserRepository.GetAsync(userId, cancellationToken: CancellationToken),
+                    organizationUnitIds
+                );
+            else
+                await SetOrganizationUnitsAsync(
+                    await UserRepository.GetAsync(userId, cancellationToken: CancellationToken),
+                    organizationUnitIds,
+                    chargeIds
+                );
+        }
+
         public virtual async Task SetOrganizationUnitsAsync(IdentityUser user, params Guid[] organizationUnitIds)
         {
             Check.NotNull(user, nameof(user));
@@ -191,6 +231,81 @@ namespace Volo.Abp.Identity
                 if (!user.IsInOrganizationUnit(organizationUnitId))
                 {
                     user.AddOrganizationUnit(organizationUnitId);
+                }
+            }
+
+            await UserRepository.UpdateAsync(user, cancellationToken: CancellationToken);
+        }
+
+        public virtual async Task SetOrganizationUnitsAsync(IdentityUser user, Guid organizationUnitId, bool isLeader)
+        {
+            Check.NotNull(user, nameof(user));
+            Check.NotNull(organizationUnitId, nameof(organizationUnitId));
+
+            await UserRepository.EnsureCollectionLoadedAsync(user, u => u.OrganizationUnits,
+                CancellationTokenProvider.Token);
+
+            //Remove from removed OUs
+            user.RemoveOrganizationUnit(organizationUnitId);
+
+            //Add to added OUs
+            if (isLeader)
+                user.AddOrganizationUnit(organizationUnitId, true);
+            else
+                user.AddOrganizationUnit(organizationUnitId, false);
+
+            await UserRepository.UpdateAsync(user, cancellationToken: CancellationToken);
+        }
+
+        public virtual async Task SetOrganizationUnitsAsync(IdentityUser user, Guid organizationUnitId, Guid[] leaderIds)
+        {
+            Check.NotNull(user, nameof(user));
+            Check.NotNull(organizationUnitId, nameof(organizationUnitId));
+
+            await UserRepository.EnsureCollectionLoadedAsync(user, u => u.OrganizationUnits,
+                CancellationTokenProvider.Token);
+
+            //Remove from removed OUs
+            user.RemoveOrganizationUnit(organizationUnitId);
+
+            //Add to added OUs
+            if (!leaderIds.IsNullOrEmpty() && leaderIds.Contains(user.Id))
+                user.AddOrganizationUnit(organizationUnitId, true);
+            else
+                user.AddOrganizationUnit(organizationUnitId, false);
+
+            await UserRepository.UpdateAsync(user, cancellationToken: CancellationToken);
+        }
+
+        public virtual async Task SetOrganizationUnitsAsync(IdentityUser user, Guid[] organizationUnitIds, Guid[] chargeIds)
+        {
+            Check.NotNull(user, nameof(user));
+            Check.NotNull(organizationUnitIds, nameof(organizationUnitIds));
+
+            await CheckMaxUserOrganizationUnitMembershipCountAsync(organizationUnitIds.Length);
+
+            await UserRepository.EnsureCollectionLoadedAsync(user, u => u.OrganizationUnits,
+                CancellationTokenProvider.Token);
+
+            //Remove from removed OUs
+            foreach (var ouId in user.OrganizationUnits.Select(uou => uou.OrganizationUnitId).ToArray())
+            {
+                if (!organizationUnitIds.Contains(ouId))
+                {
+                    user.RemoveOrganizationUnit(ouId);
+                }
+            }
+
+            //Add to added OUs
+            foreach (var organizationUnitId in organizationUnitIds)
+            {
+                if (!user.IsInOrganizationUnit(organizationUnitId))
+                {
+                    if(!chargeIds.IsNullOrEmpty() && chargeIds.Contains(organizationUnitId))
+                        user.AddOrganizationUnit(organizationUnitId, true);
+                    else
+                        user.AddOrganizationUnit(organizationUnitId, false);
+
                 }
             }
 

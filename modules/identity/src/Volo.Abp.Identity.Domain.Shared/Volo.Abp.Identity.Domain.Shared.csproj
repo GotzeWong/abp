@@ -1,9 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\..\..\configureawait.props" />
   <Import Project="..\..\..\..\common.props" />
 
   <PropertyGroup>
+	  <!--<LangVersion>latest</LangVersion>
+	  <Version>1.0.7</Version>
+	  <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
+	  <PackageIconUrl>https://avatars.githubusercontent.com/u/87802624</PackageIconUrl>
+	  <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+	  
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Volo.Abp.Identity.Domain.Shared</AssemblyName>
     <PackageId>Volo.Abp.Identity.Domain.Shared</PackageId>

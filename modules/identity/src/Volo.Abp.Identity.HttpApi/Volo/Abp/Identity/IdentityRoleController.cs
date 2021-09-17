@@ -1,5 +1,7 @@
 ﻿using System;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
@@ -58,6 +60,27 @@ namespace Volo.Abp.Identity
         public virtual Task DeleteAsync(Guid id)
         {
             return RoleAppService.DeleteAsync(id);
+        }
+
+        [HttpGet]
+        [Route("search")]
+        public Task<PagedResultDto<IdentityRoleDto>> SearchListAsync(IdentityRolePagedListDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("batchcreate")]
+        public Task BatchCreateAsync(Guid? tenantId, List<IdentityRoleExcelDto> roles)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("export")]
+        public Task<MemoryStream> DownloadIdentityRoleAsync(IdentityRolePagedListDto input)
+        {
+            throw new NotImplementedException();
         }
     }
 }

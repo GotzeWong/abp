@@ -24,6 +24,8 @@ namespace Volo.Abp.Identity
         /// </summary>
         public virtual Guid OrganizationUnitId { get; protected set; }
 
+        public virtual bool IsLeader { get; set; }
+
         protected IdentityUserOrganizationUnit()
         {
 
@@ -34,6 +36,13 @@ namespace Volo.Abp.Identity
             UserId = userId;
             OrganizationUnitId = organizationUnitId;
             TenantId = tenantId;
+        }
+        public IdentityUserOrganizationUnit(Guid userId, Guid organizationUnitId, Guid? tenantId = null, bool isLeader = false)
+        {
+            UserId = userId;
+            OrganizationUnitId = organizationUnitId;
+            TenantId = tenantId;
+            IsLeader = isLeader;
         }
 
         public override object[] GetKeys()

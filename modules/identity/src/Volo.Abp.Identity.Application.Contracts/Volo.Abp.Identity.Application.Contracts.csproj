@@ -1,9 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\..\..\configureawait.props" />
   <Import Project="..\..\..\..\common.props" />
 
   <PropertyGroup>
+	  
+	<!--<LangVersion>latest</LangVersion>
+    <Version>1.0.7</Version>
+    <NoWarn>$(NoWarn);CS1591;CS0436</NoWarn>
+    <PackageIconUrl>https://avatars.githubusercontent.com/u/87802624</PackageIconUrl>
+    <PackageLicenseExpression>LGPL-3.0-only</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+	  
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Volo.Abp.Identity.Application.Contracts</AssemblyName>
     <PackageId>Volo.Abp.Identity.Application.Contracts</PackageId>
@@ -15,6 +23,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<PackageReference Include="Npoi.Mapper" Version="3.5.1" />
+	<ProjectReference Include="..\Volo.Abp.Identity.Domain\Volo.Abp.Identity.Domain.csproj" />
     <ProjectReference Include="..\Volo.Abp.Identity.Domain.Shared\Volo.Abp.Identity.Domain.Shared.csproj" />
     <ProjectReference Include="..\..\..\permission-management\src\Volo.Abp.PermissionManagement.Application.Contracts\Volo.Abp.PermissionManagement.Application.Contracts.csproj" />
     <ProjectReference Include="..\..\..\users\src\Volo.Abp.Users.Abstractions\Volo.Abp.Users.Abstractions.csproj" />

@@ -46,6 +46,26 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
                 .ToListAsync(GetCancellationToken(cancellationToken));
         }
 
+        public virtual async Task<List<IdentityRole>> SearchListAsync(
+           string name = null,
+           string sorting = null,
+           int maxResultCount = int.MaxValue,
+           int skipCount = 0,
+           string filter = null,
+           bool includeDetails = true,
+           CancellationToken cancellationToken = default)
+        {
+            return await (await GetDbSetAsync())
+                .IncludeDetails(includeDetails)
+                .WhereIf(!filter.IsNullOrWhiteSpace(),
+                        x => x.Name.Contains(filter) ||
+                        x.NormalizedName.Contains(filter))
+                .WhereIf(!name.IsNullOrWhiteSpace(), b => b.Name.Contains(name))
+                .OrderBy(sorting.IsNullOrWhiteSpace() ? nameof(IdentityRole.Name) : sorting)
+                .PageBy(skipCount, maxResultCount)
+                .ToListAsync(GetCancellationToken(cancellationToken));
+        }
+
         public virtual async Task<List<IdentityRole>> GetListAsync(
             IEnumerable<Guid> ids,
             CancellationToken cancellationToken = default)
@@ -84,6 +104,21 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
         public override async Task<IQueryable<IdentityRole>> WithDetailsAsync()
         {
             return (await GetQueryableAsync()).IncludeDetails();
+        }
+
+        public virtual async Task<long> SearchListCountAsync(
+          string name = null,
+          string filter = null,
+          bool includeDetails = false,
+          CancellationToken cancellationToken = default)
+        {
+            return await (await GetDbSetAsync())
+                .IncludeDetails(includeDetails)
+                .WhereIf(!filter.IsNullOrWhiteSpace(),
+                        x => x.Name.Contains(filter) ||
+                        x.NormalizedName.Contains(filter))
+                .WhereIf(!name.IsNullOrWhiteSpace(), b => b.Name.Contains(name))
+                                .LongCountAsync(GetCancellationToken(cancellationToken));
         }
     }
 }

@@ -7,6 +7,7 @@ namespace Volo.Abp.Identity
     public enum OrganizationUnitStatus
     {
         Enable,
-        Disable
+        Disable,
+        Null = -1
     }
 }

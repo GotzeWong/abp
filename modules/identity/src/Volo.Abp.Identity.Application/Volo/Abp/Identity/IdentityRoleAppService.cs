@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Npoi.Mapper;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.ObjectExtending;
 
@@ -44,6 +46,19 @@ namespace Volo.Abp.Identity
 
             return new PagedResultDto<IdentityRoleDto>(
                 totalCount,
+                ObjectMapper.Map<List<IdentityRole>, List<IdentityRoleDto>>(list)
+                );
+        }
+
+
+        public virtual async Task<PagedResultDto<IdentityRoleDto>> SearchListAsync(IdentityRolePagedListDto input)
+        {
+            var id = CurrentTenant.Id;
+            var count = await RoleRepository.SearchListCountAsync(input.Name, input.Keyword);
+            var list = await RoleRepository.SearchListAsync(input.Name, input.Sorting, input.MaxResultCount, input.SkipCount, input.Keyword);
+
+            return new PagedResultDto<IdentityRoleDto>(
+                count,
                 ObjectMapper.Map<List<IdentityRole>, List<IdentityRoleDto>>(list)
                 );
         }
@@ -99,5 +114,48 @@ namespace Volo.Abp.Identity
 
             (await RoleManager.DeleteAsync(role)).CheckErrors();
         }
+
+
+        [Authorize(IdentityPermissions.Roles.Create)]
+        public async Task BatchCreateAsync(Guid? tenantId, List<IdentityRoleExcelDto> roles)
+        {
+            foreach (var item in roles)
+            {
+                var role = new IdentityRole(
+                    GuidGenerator.Create(),
+                    item.Name,
+                    CurrentTenant.Id
+                )
+                {
+                };
+
+                if (RoleManager.FindByNameAsync(role.Name) != null)
+                    (await RoleManager.UpdateAsync(role)).CheckErrors();
+                else
+                    (await RoleManager.CreateAsync(role)).CheckErrors();
+
+            }
+            await CurrentUnitOfWork.SaveChangesAsync();
+        }
+
+
+        [Authorize(IdentityPermissions.Roles.Export)]
+        public async Task<MemoryStream> DownloadIdentityRoleAsync(IdentityRolePagedListDto input)
+        {
+            var roles = await RoleRepository.SearchListAsync(input.Name, input.Sorting, input.MaxResultCount, input.SkipCount, input.Keyword);
+
+            var list = new List<IdentityRoleExcelDto>();
+            foreach (var role in roles)
+            {
+                IdentityRoleExcelDto dto = new IdentityRoleExcelDto(ObjectMapper.Map<IdentityRole, IdentityRoleDto>(role));
+                list.Add(dto);
+            }
+
+            var mapper = new Mapper();
+            MemoryStream ms = new MemoryStream();
+            mapper.Save(ms, list, "sheet1", overwrite: true, xlsx: true);
+            return ms;
+        }
+
     }
 }

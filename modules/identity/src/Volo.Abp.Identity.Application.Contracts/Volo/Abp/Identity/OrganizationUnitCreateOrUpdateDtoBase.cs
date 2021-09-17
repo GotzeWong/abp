@@ -14,6 +14,7 @@ namespace Volo.Abp.Identity
         public OrganizationUnitStatus Status { get; set; }
         public int OrderNo { get; set; }
         public string Remark { get; set; }
+        public bool? isSale { get; set; }
 
         protected OrganizationUnitCreateOrUpdateDtoBase() : base(false)
         {

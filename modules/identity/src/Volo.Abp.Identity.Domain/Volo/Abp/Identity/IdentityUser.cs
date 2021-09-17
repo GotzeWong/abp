@@ -25,6 +25,7 @@ namespace Volo.Abp.Identity
         /// Gets or sets the normalized user name for this user.
         /// </summary>
         [DisableAuditing]
+        [CanBeNull]
         public virtual string NormalizedUserName { get; protected internal set; }
 
         /// <summary>
@@ -49,6 +50,7 @@ namespace Volo.Abp.Identity
         /// Gets or sets the normalized email address for this user.
         /// </summary>
         [DisableAuditing]
+        [CanBeNull]
         public virtual string NormalizedEmail { get; protected internal set; }
 
         /// <summary>
@@ -142,7 +144,7 @@ namespace Volo.Abp.Identity
         public IdentityUser(
             Guid id,
             [NotNull] string userName,
-            [NotNull] string email,
+            string email,
             Guid? tenantId = null)
             : base(id)
         {
@@ -305,6 +307,25 @@ namespace Volo.Abp.Identity
                 )
             );
         }
+
+        public virtual void AddOrganizationUnit(Guid organizationUnitId, bool isLeader)
+        {
+            if (IsInOrganizationUnit(organizationUnitId))
+            {
+                return;
+            }
+
+            OrganizationUnits.Add(
+                new IdentityUserOrganizationUnit(
+                    Id,
+                    organizationUnitId,
+                    TenantId,
+                    isLeader
+                )
+            );
+        }
+
+
 
         public virtual void RemoveOrganizationUnit(Guid organizationUnitId)
         {

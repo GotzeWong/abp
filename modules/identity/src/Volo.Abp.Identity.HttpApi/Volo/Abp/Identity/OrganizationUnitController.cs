@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Volo.Abp.Application.Dtos;
@@ -22,7 +23,7 @@ namespace Volo.Abp.Identity
 
         [HttpGet]
         [Route("all")]
-        public virtual Task<ListResultDto<OrganizationUnitDto>> GetAllListAsync()
+        public virtual Task<List<OrganizationUnitDto>> GetAllListAsync()
         {
             return OrganizationUnitAppService.GetAllListAsync();
         }
@@ -61,10 +62,66 @@ namespace Volo.Abp.Identity
         }
 
         [HttpGet]
-        [Route("list")]
-        public Task<List<OrganizationUnitParentDto>> GetArrangedListAsync()
+        [Route("tree/{id}")]
+        public Task<List<OrganizationUnitParentDto>> GetTreeListAsync(Guid? id)
         {
-            return OrganizationUnitAppService.GetArrangedListAsync();
+            return OrganizationUnitAppService.GetTreeListAsync(id);
+        }
+
+        [HttpGet]
+        [Route("search")]
+        public Task<PagedResultDto<OrganizationUnitDto>> SearchListAsync(OrganizationUnitPagedListDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("batchcreate")]
+        public Task BatchCreateAsync(Guid? tenantId, List<OrganizationUnitExcelDto> orgs)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("export")]
+        public Task<MemoryStream> DownloadOrganizationUnitAsync(OrganizationUnitPagedListDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("leader")]
+        public Task<List<IdentityUserLeadertDto>> GetAllLeadersAsync(OrganizationUnit organizationUnit)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("bind")]
+        public Task BindAsync(OrganizationUnitBindDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("unbind")]
+        public Task UnbindAsync(OrganizationUnitUnbindDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("set-leader")]
+        public Task SetLeaderAsync(OrganizationUnitLeaderDto input)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet]
+        [Route("menu")]
+        public Task<List<OrganizationUnitMenuDto>> GetMenuListAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

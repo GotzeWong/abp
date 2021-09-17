@@ -271,5 +271,40 @@ namespace Volo.Abp.Identity.MongoDB
 
             return query;
         }
+
+        public Task<List<OrganizationUnit>> SearchListAsync(string code = null, string displayname = null, int Status = 0, string remark = null, string filter = null, int skipCount = 0, int maxResultCount = int.MaxValue, string sorting = null, bool includeDetails = false, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> SearchListCountAsync(string code = null, string displayname = null, int Status = 0, string remark = null, string filter = null, bool includeDetails = false, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<OrganizationUnit>> SearchListAsync(string code = null, string displayname = null, OrganizationUnitStatus Status = OrganizationUnitStatus.Null, string remark = null, string filter = null, int skipCount = 0, int maxResultCount = int.MaxValue, string sorting = null, bool includeDetails = false, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> SearchListCountAsync(string code = null, string displayname = null, OrganizationUnitStatus Status = OrganizationUnitStatus.Null, string remark = null, string filter = null, bool includeDetails = false, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrganizationUnit> GetByCodeAsync(string code, bool includeDetails = true, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<IdentityUser>> GetAllLeadersAsync(OrganizationUnit organizationUnit, string filter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<OrganizationUnit> GetSaleOrgAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

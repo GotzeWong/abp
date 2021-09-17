@@ -22,6 +22,8 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
 
         public DbSet<IdentityLinkUser> LinkUsers { get; set; }
 
+        public DbSet<TemporaryAccessPermission> TemporaryAccessPermissions { get; set; }
+
         public IdentityDbContext(DbContextOptions<IdentityDbContext> options)
             : base(options)
         {

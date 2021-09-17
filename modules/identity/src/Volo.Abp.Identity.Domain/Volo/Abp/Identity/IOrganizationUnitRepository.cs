@@ -27,6 +27,12 @@ namespace Volo.Abp.Identity
             CancellationToken cancellationToken = default
         );
 
+        Task<OrganizationUnit> GetByCodeAsync(
+            string code,
+            bool includeDetails = true,
+            CancellationToken cancellationToken = default
+        );
+
         Task<List<OrganizationUnit>> GetListAsync(
             string sorting = null,
             int maxResultCount = int.MaxValue,
@@ -34,7 +40,28 @@ namespace Volo.Abp.Identity
             bool includeDetails = false,
             CancellationToken cancellationToken = default
         );
-
+        Task<List<OrganizationUnit>> SearchListAsync(
+            string code = null,
+            string displayname = null,
+            OrganizationUnitStatus Status = OrganizationUnitStatus.Null,
+            string remark = null,
+            string filter = null,
+            int skipCount = 0,
+            int maxResultCount = int.MaxValue,
+            string sorting = null,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default
+        );
+        Task<long> SearchListCountAsync(
+            string code = null,
+            string displayname = null,
+            OrganizationUnitStatus Status = OrganizationUnitStatus.Null,
+            string remark = null,
+            string filter = null,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default
+        );
+        Task<OrganizationUnit> GetSaleOrgAsync();
         Task<List<OrganizationUnit>> GetListAsync(
             IEnumerable<Guid> ids,
             bool includeDetails = false,
@@ -79,6 +106,11 @@ namespace Volo.Abp.Identity
             string filter = null,
             bool includeDetails = false,
             CancellationToken cancellationToken = default
+        );
+
+        Task<List<IdentityUser>> GetAllLeadersAsync(
+            OrganizationUnit organizationUnit,
+            string filter = null
         );
 
         Task<int> GetMembersCountAsync(

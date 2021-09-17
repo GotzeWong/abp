@@ -58,6 +58,33 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
                 .ToListAsync(GetCancellationToken(cancellationToken));
         }
 
+        public virtual async Task<List<OrganizationUnit>> SearchListAsync(
+            string code = null,
+            string displayname = null,
+            OrganizationUnitStatus Status = OrganizationUnitStatus.Null,
+            string remark = null,
+            string filter = null,
+            int skipCount = 0,
+            int maxResultCount = int.MaxValue,
+            string sorting = null,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default)
+        {
+            return await (await GetDbSetAsync())
+                .IncludeDetails(includeDetails)
+                .WhereIf(!filter.IsNullOrWhiteSpace(),
+                        x => x.Code.Contains(filter) ||
+                        x.DisplayName.Contains(filter) ||
+                        x.Remark.Contains(filter))
+                .WhereIf(!code.IsNullOrWhiteSpace(), b => b.Code.Contains(code))
+                .WhereIf(!displayname.IsNullOrWhiteSpace(), b => b.DisplayName.Contains(displayname))
+                .WhereIf(!remark.IsNullOrWhiteSpace(), b => b.Remark.Contains(remark))
+                .WhereIf(Status != OrganizationUnitStatus.Null, b => b.Status == Status)
+                .OrderBy(sorting.IsNullOrEmpty() ? nameof(OrganizationUnit.DisplayName) : sorting)
+                .PageBy(skipCount, maxResultCount)
+                .ToListAsync(GetCancellationToken(cancellationToken));
+        }
+
         public virtual async Task<List<OrganizationUnit>> GetListAsync(
             IEnumerable<Guid> ids,
             bool includeDetails = false,
@@ -71,14 +98,13 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
 
         public virtual async Task<OrganizationUnit> GetAsync(
             string displayName,
-            bool includeDetails = true,
+            bool includeDetails = false,
             CancellationToken cancellationToken = default)
         {
             return await (await GetDbSetAsync())
                 .IncludeDetails(includeDetails)
-                .OrderBy(x => x.Id)
                 .FirstOrDefaultAsync(
-                    ou => ou.DisplayName == displayName,
+                    ou => ou.DisplayName.Equals(displayName),
                     GetCancellationToken(cancellationToken)
                 );
         }
@@ -285,6 +311,74 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
             }
 
             return query;
+        }
+
+        public virtual async Task<List<IdentityUser>> GetAllLeadersAsync(OrganizationUnit organizationUnit, string filter = null)
+        {
+            var dbContext = await GetDbContextAsync();
+
+            var query = from userOu in dbContext.Set<IdentityUserOrganizationUnit>()
+                        join user in dbContext.Users on userOu.UserId equals user.Id
+                        where userOu.OrganizationUnitId == organizationUnit.Id
+                        where userOu.IsLeader == true
+                        select user;
+
+            if (!filter.IsNullOrWhiteSpace())
+            {
+                query = query.Where(u =>
+                    u.UserName.Contains(filter) ||
+                    u.Email.Contains(filter) ||
+                    (u.PhoneNumber != null && u.PhoneNumber.Contains(filter))
+                );
+            }
+
+            return query.ToList();
+        }
+
+
+        public virtual async Task<long> SearchListCountAsync(
+            string code = null,
+            string displayname = null,
+            OrganizationUnitStatus Status = OrganizationUnitStatus.Null,
+            string remark = null,
+            string filter = null,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default)
+        {
+            return await (await GetDbSetAsync())
+                .IncludeDetails(includeDetails)
+                .WhereIf(!filter.IsNullOrWhiteSpace(),
+                        x => x.Code.Contains(filter) ||
+                        x.DisplayName.Contains(filter) ||
+                        x.Remark.Contains(filter))
+                .WhereIf(!code.IsNullOrWhiteSpace(), b => b.Code.Contains(code))
+                .WhereIf(!displayname.IsNullOrWhiteSpace(), b => b.DisplayName.Contains(displayname))
+                .WhereIf(!remark.IsNullOrWhiteSpace(), b => b.Remark.Contains(remark))
+                .WhereIf(Status != OrganizationUnitStatus.Null, b => b.Status == Status)
+                .LongCountAsync(GetCancellationToken(cancellationToken));
+
+        }
+
+        public virtual async Task<OrganizationUnit> GetByCodeAsync(string code, bool includeDetails = true, CancellationToken cancellationToken = default)
+        {
+            return await(await GetDbSetAsync())
+                 .IncludeDetails(includeDetails)
+                 .FirstOrDefaultAsync(
+                     ou => ou.Code == code,
+                     GetCancellationToken(cancellationToken)
+                 );
+        }
+
+        public virtual async Task<OrganizationUnit> GetSaleOrgAsync()
+        {
+            var list = await(await GetDbSetAsync())
+                 .IncludeDetails(false)
+                 .ToListAsync();
+
+            foreach(var org in list)
+                if (org.GetSale())
+                    return org;
+            return null;
         }
     }
 }

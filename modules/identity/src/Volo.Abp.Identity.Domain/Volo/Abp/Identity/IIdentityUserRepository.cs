@@ -56,8 +56,34 @@ namespace Volo.Abp.Identity
             int skipCount = 0,
             string filter = null,
             bool includeDetails = false,
-            Guid? roleId = null,
-            Guid? organizationUnitId = null,
+            CancellationToken cancellationToken = default
+        );
+
+        Task<List<IdentityUser>> GetPagedListAsync(
+            Guid? roleId,
+            Guid? orgId,
+            string username = null,
+            string name = null,
+            string surname = null,
+            string email = null,
+            string phonenumber = null,
+            string filter = null,
+            int skipCount = 0,
+            int maxResultCount = int.MaxValue,
+            string sorting = null,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default
+        );
+
+        Task<long> GetPagedListCountAsync(
+            Guid? roleId,
+            Guid? orgId,
+            string username = null,
+            string name = null,
+            string surname = null,
+            string email = null,
+            string phonenumber = null,
+            string filter = null,
             CancellationToken cancellationToken = default
         );
 
@@ -68,6 +94,11 @@ namespace Volo.Abp.Identity
         );
 
         Task<List<OrganizationUnit>> GetOrganizationUnitsAsync(
+            Guid id,
+            bool includeDetails = false,
+            CancellationToken cancellationToken = default);
+        
+        Task<List<IdentityUserOrganizationUnit>> GetUserOrganizationUnitsAsync(
             Guid id,
             bool includeDetails = false,
             CancellationToken cancellationToken = default);
@@ -88,9 +119,12 @@ namespace Volo.Abp.Identity
 
         Task<long> GetCountAsync(
             string filter = null,
-            Guid? roleId = null,
-            Guid? organizationUnitId = null,
             CancellationToken cancellationToken = default
         );
+        Task<long> GetUsersCountInOrganizationUnitAsync(
+            Guid organizationUnitId,
+            CancellationToken cancellationToken = default
+        );
+        
     }
 }

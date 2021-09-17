@@ -16,6 +16,5 @@ namespace Volo.Abp.Identity
         public int OrderNo { get; set; }
         public string Remark { get; set; }
         public string ConcurrencyStamp { get; set; }
-
     }
 }

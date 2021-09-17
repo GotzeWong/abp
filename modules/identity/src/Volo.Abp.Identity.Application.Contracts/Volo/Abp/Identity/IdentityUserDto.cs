@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Domain.Entities;
 using Volo.Abp.MultiTenancy;
@@ -28,5 +29,8 @@ namespace Volo.Abp.Identity
         public DateTimeOffset? LockoutEnd { get; set; }
 
         public string ConcurrencyStamp { get; set; }
+
+        public virtual ICollection<IdentityUserRole> Roles { get; protected set; }
+        public virtual ICollection<IdentityUserOrganizationUnit> OrganizationUnits { get; protected set; }
     }
 }

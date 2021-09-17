@@ -18,5 +18,7 @@ namespace Volo.Abp.Identity.EntityFrameworkCore
         DbSet<IdentitySecurityLog> SecurityLogs { get; }
 
         DbSet<IdentityLinkUser> LinkUsers { get; }
+
+        DbSet<TemporaryAccessPermission> TemporaryAccessPermissions { get; }
     }
 }

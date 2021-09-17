@@ -75,5 +75,15 @@ namespace Volo.Abp.Identity.MongoDB
                 .As<IMongoQueryable<IdentityRole>>()
                 .LongCountAsync(GetCancellationToken(cancellationToken));
         }
+
+        public Task<List<IdentityRole>> SearchListAsync(string name = null, string sorting = null, int maxResultCount = int.MaxValue, int skipCount = 0, string filter = null, bool includeDetails = false, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> SearchListCountAsync(string name = null, string filter = null, bool includeDetails = false, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace Volo.Abp.Identity
             public const string Create = Default + ".Create";
             public const string Update = Default + ".Update";
             public const string Delete = Default + ".Delete";
+            public const string Export = Default + ".Export";
             public const string ManagePermissions = Default + ".ManagePermissions";
         }
 
@@ -21,12 +22,24 @@ namespace Volo.Abp.Identity
             public const string Create = Default + ".Create";
             public const string Update = Default + ".Update";
             public const string Delete = Default + ".Delete";
+            public const string Export = Default + ".Export";
             public const string ManagePermissions = Default + ".ManagePermissions";
         }
 
         public static class Organizations
         {
             public const string Default = GroupName + ".Organizations";
+            public const string Create = Default + ".Create";
+            public const string Update = Default + ".Update";
+            public const string Delete = Default + ".Delete";
+            public const string Export = Default + ".Export";
+            public const string OUManagement = Default + ".OUManagement";
+            public const string ManagePermissions = Default + ".ManagePermissions";
+        }
+
+        public static class TemporaryAccessPermissions
+        {
+            public const string Default = GroupName + ".TemporaryAccessPermissions";
             public const string Create = Default + ".Create";
             public const string Update = Default + ".Update";
             public const string Delete = Default + ".Delete";

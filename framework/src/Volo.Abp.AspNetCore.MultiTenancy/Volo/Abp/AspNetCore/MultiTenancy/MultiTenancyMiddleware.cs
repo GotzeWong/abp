@@ -37,7 +37,7 @@ namespace Volo.Abp.AspNetCore.MultiTenancy
             TenantConfiguration tenant;
             try
             {
-                tenant = await _tenantConfigurationProvider.GetAsync(saveResolveResult: true);
+               	tenant = await _tenantConfigurationProvider.GetAsync(saveResolveResult: true);
             }
             catch (Exception e)
             {

@@ -126,6 +126,12 @@ namespace Volo.Abp.Identity
             return ou;
         }
 
+        public virtual async Task<OrganizationUnit> GetByNameAsync(string name)
+        {
+            var ou = await OrganizationUnitRepository.GetAsync(name);
+            return ou;
+        }
+
         public virtual async Task<string> GetCodeOrDefaultAsync(Guid id)
         {
             var ou = await OrganizationUnitRepository.GetAsync(id);
